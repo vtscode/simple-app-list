@@ -24,8 +24,8 @@ const TestUsers = (props) => {
   },[]);
 
   return(
-    <Layout.Content>
-    <Row>
+    <Layout.Content className="content__wrap">
+    <Row className="content__1">
       {!users.loading ? users?.data?.map(el => (
         <Col span={4} key={el.id}>
           <div className="our-team">
@@ -46,7 +46,7 @@ const TestUsers = (props) => {
         </Col>
       )) 
     :
-    <LoadingOutlined spin style={{color : 'royalblue'}} /> }
+    <LoadingOutlined spin className="loading_comp"/> }
     </Row>
     </Layout.Content>
   )
