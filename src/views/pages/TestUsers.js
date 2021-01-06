@@ -2,13 +2,15 @@
 import React from 'react';
 import { noImagePath } from "utils";
 import network from "services/network";
-import { Layout,Modal,Skeleton,Image,Row,Col,Space } from "antd";
+import { Layout,Modal,Skeleton,Image,Row,Col } from "antd";
 
 const DetailUser = (props) => {
   return (
     <div className="our-team">
       <div className="picture">
-        <Image fallback={noImagePath} className="img-fluid" src={props.avatar} />
+        {props.type === 'modal' ? 
+          <Image fallback={noImagePath} className="img-fluid" src={props.avatar} /> 
+          : <img className="img-fluid" src={props.avatar} /> }
       </div>
       <div className="team-content">
         <h3 className="name">{props.first_name} {props.last_name}</h3>
@@ -85,7 +87,7 @@ const TestUsers = () => {
       onCancel={() => setUsers(prev=> ({...prev,visible:false}))}
       footer={null}
     >
-      <DetailUser {...users.datamodal} />
+      <DetailUser type="modal" {...users.datamodal} />
     </Modal>
     </Layout.Content>
   )
