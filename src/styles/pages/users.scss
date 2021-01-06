@@ -26,6 +26,11 @@ $color-title : #4e5052;
   text-align: center;
   overflow: hidden;
   position: relative;
+
+  &__container{
+    cursor: pointer;
+  }
+
   & .picture {
     display: inline-block;
     height: 130px;

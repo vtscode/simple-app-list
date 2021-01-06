@@ -2,11 +2,50 @@
 import React from 'react';
 import { noImagePath } from "utils";
 import network from "services/network";
-import { Layout,Space,Skeleton,Image,Row,Col } from "antd";
-import {LoadingOutlined} from '@ant-design/icons';
+import { Layout,Modal,Skeleton,Image,Row,Col,Space } from "antd";
 
-const TestUsers = (props) => {
-  const [users,setUsers] = React.useState({loading : false});
+const DetailUser = (props) => {
+  return (
+    <div className="our-team">
+      <div className="picture">
+        <Image fallback={noImagePath} className="img-fluid" src={props.avatar} />
+      </div>
+      <div className="team-content">
+        <h3 className="name">{props.first_name} {props.last_name}</h3>
+        <h4 className="title">{props.email}</h4>
+      </div>
+      <ul className="social">
+        <li><a href="#" className="fa fa-facebook" aria-hidden="true"></a></li>
+      </ul>
+    </div>
+  )
+};
+const SkeletonWrap = () => (
+  <Layout.Content className="content__wrap">
+    <Row className="content__1" style={{width:'100%'}}>
+    {
+      [1,2,3,4].map(x => (
+        <Col span={4} key={x} className="our-team__container">
+          <div className="our-team">
+              <div className="picture">
+                <Skeleton.Image />
+              </div>
+              <div className="team-content">
+                <Skeleton active />
+              </div>
+              <ul className="social">
+                <li><a href="#" className="fa fa-facebook" aria-hidden="true">SHOW DETAILS</a></li>
+              </ul>
+          </div>
+        </Col>
+      ))
+    }
+    </Row>
+  </Layout.Content>
+)
+
+const TestUsers = () => {
+  const [users,setUsers] = React.useState({loading : false,visible : false});
 
   React.useEffect(() => {
     (async () => {
@@ -22,32 +61,32 @@ const TestUsers = (props) => {
       }
     })();
   },[]);
+  const handleClick = (element) => {
+    setUsers(prev=> ({...prev,visible:true, datamodal : element}));
+  }
+
+  if(users.loading){
+    return (
+      <SkeletonWrap />
+    )
+  }
 
   return(
     <Layout.Content className="content__wrap">
     <Row className="content__1">
-      {!users.loading ? users?.data?.map(el => (
-        <Col span={4} key={el.id}>
-          <div className="our-team">
-            <div className="picture">
-              <Image fallback={noImagePath} className="img-fluid" src={el.avatar} />
-            </div>
-            <div className="team-content">
-              <h3 className="name">{el.first_name} {el.last_name}</h3>
-              <h4 className="title">{el.email}</h4>
-            </div>
-            <ul className="social">
-              <li><a href="https://google.com" className="fa fa-facebook" aria-hidden="true"></a></li>
-              <li><a href="https://google.com" className="fa fa-twitter" aria-hidden="true"></a></li>
-              <li><a href="https://google.com" className="fa fa-google-plus" aria-hidden="true"></a></li>
-              <li><a href="https://google.com" className="fa fa-linkedin" aria-hidden="true"></a></li>
-            </ul>
-          </div>
+      {users?.data?.map(el => (
+        <Col span={4} key={el.id} className="our-team__container" onClick={() => handleClick(el)}>
+          <DetailUser {...el} />
         </Col>
-      )) 
-    :
-    <LoadingOutlined spin className="loading_comp"/> }
+      ))  }
     </Row>
+    <Modal 
+      visible={users.visible}
+      onCancel={() => setUsers(prev=> ({...prev,visible:false}))}
+      footer={null}
+    >
+      <DetailUser {...users.datamodal} />
+    </Modal>
     </Layout.Content>
   )
 };
